@@ -1,0 +1,63 @@
+import * as THREE from 'three';
+import { Vector3 } from 'three';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000); // Set background color to black
+
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector("canvas") });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+camera.position.z = 5;
+
+// Define variables for camera movement
+const moveForward = new Vector3(0, 0, -1);
+const moveBackward = new Vector3(0, 0, 1);
+const moveLeft = new Vector3(-1, 0, 0);
+const moveRight = new Vector3(1, 0, 0);
+
+const cameraSpeed = 0.1;
+const keyboardState = {};
+
+// Add event listeners for keyboard input
+document.addEventListener('keydown', (event) => {
+  keyboardState[event.code] = true;
+});
+
+document.addEventListener('keyup', (event) => {
+  keyboardState[event.code] = false;
+});
+
+// Update camera position and lookAt in the animate loop
+function animate() {
+  requestAnimationFrame(animate);
+
+  // Move camera based on keyboard input
+  if (keyboardState['KeyW']) {
+    camera.position.addScaledVector(moveForward, cameraSpeed);
+  }
+  if (keyboardState['KeyS']) {
+    camera.position.addScaledVector(moveBackward, cameraSpeed);
+  }
+  if (keyboardState['KeyA']) {
+    camera.position.addScaledVector(moveLeft, cameraSpeed);
+  }
+  if (keyboardState['KeyD']) {
+    camera.position.addScaledVector(moveRight, cameraSpeed);
+  }
+
+  // Update camera lookAt based on cube position
+
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+  renderer.render(scene, camera);
+}
+
+animate();
